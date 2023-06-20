@@ -67,25 +67,23 @@ import json
 
 req = """
 {
-   "book": [
-
+   "items":[
       {
-         "id": "01",
-         "language": "Java",
-         "edition": "third",
-         "author": "Herbert Schildt"
-      },
+         "@id":"http://environment.data.gov.uk/hydrology/id/stations/c46d1245-e34a-4ea9-8c4c-410357e80e15",
+         "nrfaStationID":"45007",
+         "type":[
+            {
+               "@id":"http://environment.data.gov.uk/flood-monitoring/def/core/Station"
+            },
+            {
+               "@id":"http://environment.data.gov.uk/reference/def/core/SamplingLocation"
+            }
+            ]
 
-      {
-         "id": "07",
-         "language": "C++",
-         "edition": "second",
-         "author": "E.Balagurusamy"
       }
-
    ]
-}
-"""
+}"""
+
 person = json.loads(req)
 
 """
@@ -95,19 +93,34 @@ for line in person['book']:
 
 for k, v in d.items():
     print(k, v)
-"""
 
-for line in person['book']:
+for line in person['items']:
     for key, value in dict(line).items():
         print(key, value)
 
-
-
-
 """
-print(person['book'])
+req = requests.get("https://environment.data.gov.uk/hydrology/id/stations")
+req = req.json()
 
-pattern_without_braces = r'(?<=\[).*?(?=\])'
-parts = re.findall(pattern_without_braces, str(person))
-print(parts)
-"""
+dictionary = {}
+label: str
+stationGuid: str
+
+for line in req['items']:
+    for key, value in dict(line).items():
+        if key == 'stationGuid':
+            stationGuid = value
+        elif key == 'label':
+            label = value
+
+    dictionary.update({f'{label}': stationGuid})
+
+for i, j in dictionary.items():
+    print(i, j)
+
+
+
+
+
+
+
