@@ -1,3 +1,5 @@
+import random
+
 import requests
 from datetime import datetime
 class WrongStation(Exception):
@@ -184,6 +186,18 @@ def get_detailed_information(date_range):
 
     return usr_input
 
+def get_station_details(answer, date_chosen):
+    req = requests.get(
+        f"https://environment.data.gov.uk/hydrology/id/measures/{answer}-flow-i-900-m3s-qualified/readings?date={date_chosen}")
+    req = req.json()
+
+    for line in req['items']:
+        for key, value in dict(line).items():
+            if key == "dateTime":
+                print("\n")
+            if key not in ("measure", "date"):
+                print(f"{key}: ", f"\t\t\t{value}")
+
 
 
 #Main function, running program
@@ -207,38 +221,11 @@ answer = get_basic_data(answer, dicOfStation)
 # getting range of available dates for chosen station
 date_range = get_date_range()
 
-
-"""
-print(f"\nFor the selected station, the date range is as follows: {date_range}")
-input = input(f"Please choose one of available dates i.e {min(date_range)}: ")
-
-answer = '48513a18-e485-4317-ae92-93bf4f7f3e54'
-"""
-
+# asking user to enter a date
 date_chosen = get_detailed_information(date_range)
 
-req = requests.get(
-    f"https://environment.data.gov.uk/hydrology/id/measures/{answer}-flow-i-900-m3s-qualified/readings?date={date_chosen}")
-req = req.json()
-
-
-for line in req['items']:
-    for key, value in dict(line).items():
-        print(key, value)
-
-
-
-
-"""
-usr_input = '2022-01-01'
-
-try:
-    if datetime.strptime(usr_input, '%Y-%m-%d'):
-        print("dupa")
-
-except ValueError as err:
-    print("Sorry, you haven't provided available date per chosen Station")
-"""
+# showing details information about particular station
+get_station_details(answer, date_chosen)
 
 
 
