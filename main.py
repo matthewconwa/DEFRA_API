@@ -199,8 +199,7 @@ def get_station_details(answer, date_chosen):
                 print(f"{key}: ", f"\t\t\t{value}")
 
 
-
-#Main function, running program
+#Main
 if __name__ == '__main__':
     pass
 
